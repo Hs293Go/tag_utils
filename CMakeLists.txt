@@ -133,9 +133,9 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
-  src/ReTransform.cpp
-)
+# add_library(${PROJECT_NAME}
+#   src/ReTransform.cpp
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -147,11 +147,7 @@ add_library(${PROJECT_NAME}
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(camera_node src/camera_node.cpp)
 
-add_executable(retransform_node src/retransform_node.cpp)
-
-add_library(retransform_lib src/ReTransform.cpp   
-  ${catkin_LIBRARIES}
-  ${EIGEN3_LIBS})
+add_executable(transform_backend src/transform_backend.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -170,8 +166,7 @@ target_link_libraries(camera_node
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(retransform_node
-  retransform_lib
+target_link_libraries(transform_backend
   ${OpenCV_LIBS}
   ${EIGEN3_LIBS}
   ${catkin_LIBRARIES}
