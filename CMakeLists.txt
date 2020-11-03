@@ -26,7 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
-
+find_package(fmt REQUIRED)
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
@@ -126,7 +126,6 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include/tag_utils/plugins/plugins
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
   include
@@ -164,6 +163,7 @@ target_link_libraries(camera_node
   ${OpenCV_LIBS}
   ${EIGEN3_LIBS}
   ${catkin_LIBRARIES}
+  fmt::fmt
 )
 
 target_link_libraries(transform_backend
