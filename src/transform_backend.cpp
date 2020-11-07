@@ -5,7 +5,6 @@
 
 #include <apriltag_ros/AprilTagDetectionArray.h>
 #include <ros/ros.h>
-#include <sophus/se3.hpp>
 
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
