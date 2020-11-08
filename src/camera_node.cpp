@@ -114,16 +114,21 @@ int main(int argc, char *argv[]) {
     cv::Mat frame, gray;
     while (ros::ok()) {
         cap >> frame;
-        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
-        if (!gray.empty()) {
-            auto current_time = ros::Time::now();
-            msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", gray)
-                      .toImageMsg();
-            msg->header.stamp = current_time;
-            c_info.header.stamp = current_time;
-            img_pub.publish(msg);
-            info_pub.publish(c_info);
+
+        if (frame.empty()) {
+            ROS_ERROR("No images captured!");
+            ros::Duration(1.0).sleep();
+            continue;
         }
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+        auto current_time = ros::Time::now();
+        msg =
+            cv_bridge::CvImage(std_msgs::Header(), "mono8", gray).toImageMsg();
+        msg->header.stamp = current_time;
+        c_info.header.stamp = current_time;
+        img_pub.publish(msg);
+        info_pub.publish(c_info);
+
         ros::spinOnce();
         loop_rate.sleep();
     }
