@@ -1,6 +1,4 @@
-# Don't commit tests often of a impromptu nature
-./tests/*.cpp
-./tests/*.hpp
+.history/*
 .vscode/*
 
 devel/
