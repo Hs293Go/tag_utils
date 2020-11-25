@@ -1,8 +1,0 @@
-<launch>
-  <arg name="launch_prefix" default="" />
-  <arg name="node_namespace" default="transform_backend" />
-  <rosparam file="$(find tag_utils)/config/transforms.yaml" />
-  <node pkg="tag_utils" type="transform_backend" name="$(arg node_namespace)" clear_params="true" output="screen" launch-prefix="$(arg launch_prefix)">
-
-  </node>
-</launch>
