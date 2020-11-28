@@ -3,12 +3,14 @@
   <arg name="camera_node_namespace" default="camera" />
   <arg name="camera_name" default="camerav2_1280x720" />
   <arg name="camera_info_dir" default="$(find tag_utils)/camera_info" />
+  <arg name='use_webcam' default="false" />
   <arg name="image_topic" default="image_rect" />
   
   <node pkg="tag_utils" type="camera_node" name="$(arg camera_node_namespace)" clear_params="true" output="screen" launch-prefix="$(arg launch_prefix)">
     <!-- Remap topics from those used in code to those on the ROS network -->
     <param name="camera_name" value="$(arg camera_name)" />
     <param name="camera_info_url" value="$(arg camera_info_dir)/$(arg camera_name).yaml" />
+    <param name="use_webcam" value="$(arg use_webcam)" />
   </node>
   
   <arg name="continous_node_namespace" default="apriltag_ros_continuous_node" />
