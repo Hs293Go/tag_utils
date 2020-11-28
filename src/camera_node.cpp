@@ -61,14 +61,12 @@ int main(int argc, char *argv[]) {
     const std::string device =
         use_webcam ? nh.param("device", default_device) : "";
 
-    const int default_width = c_info.width;
-    const int default_height = c_info.height;
-    const int capture_width = nh.param("capture_width", default_width);
-    const int capture_height = nh.param("capture_height", default_height);
-    const int display_width = nh.param("display_width", default_width);
-    const int display_height = nh.param("display_height", default_height);
-    const int framerate = nh.param("framerate", 30);
-    const int flip_method = nh.param("flip_method", 0);
+    const int capture_width = nh.param<int>("capture_width", c_info.width);
+    const int capture_height = nh.param<int>("capture_height", c_info.height);
+    const int display_width = nh.param<int>("display_width", capture_width);
+    const int display_height = nh.param<int>("display_height", capture_height);
+    const int framerate = nh.param<int>("framerate", 30);
+    const int flip_method = nh.param<int>("flip_method", 0);
 
     const std::array<std::string, 2> base_pipe = {
         "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int){0}, "
