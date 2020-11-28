@@ -20,7 +20,7 @@ roslaunch tag_utils calibrate_camera.launch size:=10X8 square:=0.2
 ```
 where `10x8` and `0.2` should be replaced with the actual checkerboard's grid count along each edge and size of each individual grid. 
 
-The UI of `cameracalibrator.py` consists of a video window, 3 progress bars and the buttons **calibrate**, **save** and **commit**. Start calibrating by moving the checkerboard in the video window
+The UI of `cameracalibrator.py` consists of a video window, the progress bars **x**, **y**, **size**, and **skew** and the buttons **calibrate**, **save** and **commit**. Start calibrating by moving the checkerboard in the video window
  - Move the checkerboard horizontally and vertically to fill the **x** and **y** progress bar
  - Move the checkerboard close and far to fill the **size** progress bar
  - Tilt the checkerboard to its sides to fill the **skew** progress bar
@@ -51,3 +51,10 @@ Next fetch the [pull request](https://github.com/ros-perception/vision_opencv/pu
 ```
 
 Finally, build vision\_opencv with either `catkin_make` or `catkin build`.
+
+## Launch files
+These launch files are provided to operate this package
+- `roslaunch tag_utils calibrate_camera.launch` carries out camera calibration
+- `roslaunch tag_utils run_camera,launch` runs the Raspberry Pi camera and publishes images
+- `roslaunch tag_utils run_cam_and_detect.launch` in addition to running the camera, launches a apriltag_ros detection node to output measured tag pose 
+- `roslaunch tag_utils run_cam_and_detect_with_tf.launch` in addition to measuring tag pose, transforms measured tag pose by predefined camera extrinsics, e.g. camera pose relative to some parent body
