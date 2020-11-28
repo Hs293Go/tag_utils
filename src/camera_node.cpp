@@ -56,6 +56,11 @@ int main(int argc, char *argv[]) {
         c_info = c_info_man.getCameraInfo();
     }
 
+    const bool use_webcam = nh.param("use_webcam", false);
+    const std::string default_device = "/dev/video0";
+    const std::string device =
+        use_webcam ? nh.param("device", default_device) : "";
+
     const int default_width = c_info.width;
     const int default_height = c_info.height;
     const int capture_width = nh.param("capture_width", default_width);
@@ -65,14 +70,22 @@ int main(int argc, char *argv[]) {
     const int framerate = nh.param("framerate", 30);
     const int flip_method = nh.param("flip_method", 0);
 
-    const std::string pipeline = fmt::format(
-        "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int){}, "
-        "height=(int){}, format=(string)NV12, framerate=(fraction){}/1 ! "
-        "nvvidconv flip-method={} ! video/x-raw, width=(int){}, "
-        "height=(int){}, format=(string)BGRx ! videoconvert ! video/x-raw, "
+    const std::array<std::string, 2> base_pipe = {
+        "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int){0}, "
+        "height=(int){1}, format=(string)NV12, framerate=(fraction){2}/1 ! "
+        "nvvidconv flip-method={3} ! video/x-raw, width=(int){4}, "
+        "height=(int){5}, format=(string)BGRx ! videoconvert ! video/x-raw, "
         "format=(string)BGR ! appsink",
-        capture_width, capture_height, framerate, flip_method, display_width,
-        display_height);
+        "v4l2src device={6} ! video/x-raw, width=(int){0}, "
+        "height=(int){1}, framerate=(fraction){2}/1 ! "
+        "videoflip method={3} ! video/x-raw, width=(int){4}, "
+        "height=(int){5} ! videoconvert ! video/x-raw, "
+        "format=(string)BGR ! appsink",
+    };
+
+    const std::string pipeline = fmt::format(
+        base_pipe[use_webcam], capture_width, capture_height, framerate,
+        flip_method, display_width, display_height, device);
 
     ROS_INFO("Using gstreamer pipeline: \x1B[32m%s", pipeline.c_str());
 
