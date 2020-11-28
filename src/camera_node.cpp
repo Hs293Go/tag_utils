@@ -29,60 +29,41 @@ int main(int argc, char *argv[]) {
     sensor_msgs::CameraInfo c_info;
 
     // Parse camera name argument first
-    std::string camera_name = "camera";
-    if (nh.getParam("camera_name", camera_name)) {
-        ROS_INFO("Provided camera name: %s", camera_name.c_str());
-    }
+    const std::string default_camera_name = "camera";
+    const std::string camera_name =
+        nh.param("camera_name", default_camera_name);
+    ROS_INFO("Provided camera name: %s", camera_name.c_str());
 
     // Default path to camera calibration file is guessed from camera name
-    std::string camera_info_url =
+    const std::string default_camera_info_url =
         fmt::format("file://{}/camera_info/{}.yaml",
                     ros::package::getPath("tag_utils"), camera_name);
 
-    if (nh.getParam("camera_info_url", camera_info_url)) {
-        camera_info_url = fmt::format(
-            "file://{}", fs::absolute(camera_info_url).generic_string());
-    }
+    const std::string camera_info_url = fmt::format(
+        "file://{}",
+        fs::absolute(nh.param("camera_info_url", default_camera_info_url))
+            .generic_string());
 
     camera_info_manager::CameraInfoManager c_info_man(nh, camera_name,
                                                       camera_info_url);
     if (!c_info_man.loadCameraInfo(camera_info_url)) {
-        ROS_ERROR("Calibration file not found");
-        return 1;
+        ROS_WARN(
+            "Failed to load camera info from %s! No valid camera info will be "
+            "published.",
+            camera_info_url.c_str());
     } else {
-        ROS_INFO("Camera successfully calibrated");
+        ROS_INFO("Loaded camera info from %s", camera_info_url.c_str());
         c_info = c_info_man.getCameraInfo();
     }
 
-    int capture_width;
-    if (!nh.getParam("capture_width", capture_width)) {
-        capture_width = c_info.width;
-    }
-
-    int capture_height;
-    if (!nh.getParam("capture_height", capture_width)) {
-        capture_height = c_info.height;
-    }
-
-    int display_width;
-    if (!nh.getParam("display_width", display_width)) {
-        display_width = c_info.width;
-    }
-
-    int display_height;
-    if (!nh.getParam("display_height", display_height)) {
-        display_height = c_info.height;
-    }
-
-    int framerate;
-    if (!nh.getParam("framerate", framerate)) {
-        framerate = 30;
-    }
-
-    int flip_method;
-    if (!nh.getParam("flip_method", flip_method)) {
-        flip_method = 0;
-    }
+    const int default_width = c_info.width;
+    const int default_height = c_info.height;
+    const int capture_width = nh.param("capture_width", default_width);
+    const int capture_height = nh.param("capture_height", default_height);
+    const int display_width = nh.param("display_width", default_width);
+    const int display_height = nh.param("display_height", default_height);
+    const int framerate = nh.param("framerate", 30);
+    const int flip_method = nh.param("flip_method", 0);
 
     const std::string pipeline = fmt::format(
         "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int){}, "
